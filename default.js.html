@@ -1,0 +1,6 @@
+function serchWord(){
+  var word = $("#inputWord").val();
+  var url = "https://dictionary.cambridge.org/dictionary/english/" + word;
+  $("#iframeDictionary").attr('src',url);   
+  return false;
+}

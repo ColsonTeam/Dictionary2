@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    
+    <form class="form-horizontal container">
+    <div class="form-group">
+      <div class="col-sm-5">
+        <input class="form-control" id="inputWord" type="text">
+      </div>
+      <div class="col-sm-5">
+        <button type="button" class="btn btn-info" onclick="serchWord(); return false;">Search</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-9">
+    
+        <iframe id="iframeDictionary"src="https://dictionary.cambridge.org/" height="1920" width="100%"></iframe>
+      </div>
+      <div class="col-sm-3">
+        <table class="table table-hover" id="tableWords"></table>
+      </div>
+    </div>
+    
+    </form>
+
+    <script>
+      getWord();
+      $( "#cdo-search-form" ).submit(
+      function (event){
+        console.log( "Handler for .submit() called." );
+        event.preventDefault();
+      });
+
+      function serchWord(data){
+        var word;
+        if(data == null){
+           word = $("#inputWord").val();
+        }else{
+          word = data;
+        }
+        
+        var url = "https://dictionary.cambridge.org/dictionary/english/" + word;
+        $("#iframeDictionary").attr('src',url);   
+        insertWord(word);
+        return false;
+      }
+      
+      function insertWord(word){
+        google.script.run.withSuccessHandler(getWord).insertWord(word);
+      }
+      
+      function getWord(){
+        google.script.run.withSuccessHandler(showTable).getWords();
+      }
+      
+      function showTable(data){
+        var len = data.length;
+        var table = "<thead><tr><th>No</th><th>Words</th></tr></thead><tbody>"
+        for(var index = 0; index < len; index++){
+          table = table + "<tr><td>" + (index + 1) + "</td><td onclick=serchWord('" + data[index] + "')>" + data[index] + "</td></tr>";
+        }
+        $("#tableWords thead").remove();
+        $("#tableWords tbody").remove();
+        $("#tableWords").append(table);
+      }
+
+    </script>
+  </body>
+</html>
+
+
